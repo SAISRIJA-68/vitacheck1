@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>VitaCheck — Health Questionnaire</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+</head>
+<body class="predict-page" data-theme="dark">
+
+<nav class="nav">
+  <a href="/" class="nav-brand"><span class="logo-icon">⬡</span> VitaCheck</a>
+  <button class="theme-toggle" id="themeToggle" title="Toggle dark/light mode">☽</button>
+</nav>
+
+<div class="predict-wrap">
+  <div class="predict-header">
+    <h1>Health Questionnaire</h1>
+    <p>Fill in your details accurately for the most reliable prediction.</p>
+    <div class="step-bar">
+      <div class="step active" data-step="1"><span>1</span> Personal Info</div>
+      <div class="step-line"></div>
+      <div class="step" data-step="2"><span>2</span> Lifestyle</div>
+      <div class="step-line"></div>
+      <div class="step" data-step="3"><span>3</span> Symptoms</div>
+    </div>
+  </div>
+
+  <!-- ── STEP 1: Personal Info ── -->
+  <div class="form-section active" id="step1">
+    <h2 class="section-title">🧑 Personal Information</h2>
+    <div class="form-grid">
+
+      <div class="form-group">
+        <label for="age">Age <span class="required">*</span>
+          <span class="tooltip" data-tip="Enter your age between 10 and 85">?</span>
+        </label>
+        <input type="number" id="age" min="10" max="85" placeholder="e.g. 28" required/>
+        <span class="field-error" id="age-err"></span>
+      </div>
+
+      <div class="form-group">
+        <label>Gender <span class="required">*</span></label>
+        <div class="radio-group">
+          <label class="radio-card">
+            <input type="radio" name="gender" value="0"/> 
+            <span>♀ Female</span>
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="gender" value="1"/> 
+            <span>♂ Male</span>
+          </label>
+        </div>
+        <span class="field-error" id="gender-err"></span>
+      </div>
+
+      <div class="form-group">
+        <label for="bmi">BMI <span class="required">*</span>
+          <span class="tooltip" data-tip="Body Mass Index. Normal range: 18.5–24.9">?</span>
+        </label>
+        <input type="number" id="bmi" min="10" max="50" step="0.1" placeholder="e.g. 22.5" required/>
+        <div class="bmi-bar-wrap">
+          <div class="bmi-bar">
+            <div class="bmi-fill" id="bmiFill"></div>
+            <div class="bmi-marker" id="bmiMarker"></div>
+          </div>
+          <div class="bmi-labels">
+            <span>Underweight</span><span>Normal</span><span>Overweight</span><span>Obese</span>
+          </div>
+        </div>
+        <span class="field-error" id="bmi-err"></span>
+      </div>
+
+    </div>
+    <div class="step-nav">
+      <button class="btn-next" onclick="goStep(2)">Next: Lifestyle →</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 2: Lifestyle ── -->
+  <div class="form-section" id="step2">
+    <h2 class="section-title">🌿 Lifestyle Factors</h2>
+    <div class="form-grid">
+
+      <div class="form-group">
+        <label for="exercise">Exercise (days/week)
+          <span class="tooltip" data-tip="How many days per week do you exercise?">?</span>
+        </label>
+        <div class="slider-wrap">
+          <input type="range" id="exercise" min="0" max="7" value="3" class="styled-range"/>
+          <div class="range-labels"><span>0</span><span>7</span></div>
+          <div class="range-val" id="exerciseVal">3 days</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="diet">Diet Quality
+          <span class="tooltip" data-tip="Rate your diet: 1=very poor, 5=excellent">?</span>
+        </label>
+        <div class="rating-stars" id="dietRating">
+          <span class="star" data-val="1">★</span>
+          <span class="star" data-val="2">★</span>
+          <span class="star" data-val="3">★</span>
+          <span class="star" data-val="4">★</span>
+          <span class="star" data-val="5">★</span>
+        </div>
+        <input type="hidden" id="diet_quality" value="3"/>
+        <div class="rating-label" id="dietLabel">Good</div>
+      </div>
+
+      <div class="form-group">
+        <label for="sun">Sun Exposure
+          <span class="tooltip" data-tip="0=None, 1=Minimal, 2=Moderate, 3=Regular, 4=Frequent">?</span>
+        </label>
+        <div class="slider-wrap">
+          <input type="range" id="sun" min="0" max="4" value="2" class="styled-range"/>
+          <div class="range-labels"><span>None</span><span>Frequent</span></div>
+          <div class="range-val" id="sunVal">Moderate</div>
+        </div>
+      </div>
+
+    </div>
+    <div class="step-nav">
+      <button class="btn-back" onclick="goStep(1)">← Back</button>
+      <button class="btn-next" onclick="goStep(3)">Next: Symptoms →</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 3: Symptoms ── -->
+  <div class="form-section" id="step3">
+    <h2 class="section-title">🩺 Symptoms</h2>
+    <p class="section-sub">Select all symptoms you have been experiencing recently.</p>
+
+    <div class="symptom-grid" id="symptomGrid">
+      <!-- Populated by JS -->
+    </div>
+
+    <div class="selected-count">
+      Selected: <span id="selectedCount">0</span> symptoms
+    </div>
+
+    <div class="step-nav">
+      <button class="btn-back" onclick="goStep(2)">← Back</button>
+      <button class="btn-predict" id="predictBtn" onclick="submitPrediction()">
+        <span id="btnText">Analyse My Health</span>
+        <span id="btnLoader" class="hidden">Analysing…</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay hidden" id="loadingOverlay">
+  <div class="loading-box">
+    <div class="dna-spinner"></div>
+    <h3 class="loading-title">Analysing Your Health</h3>
+    <div class="loading-steps">
+      <div class="load-step active" id="ls1">Processing symptoms…</div>
+      <div class="load-step" id="ls2">Running ML model…</div>
+      <div class="load-step" id="ls3">Generating recommendations…</div>
+      <div class="load-step" id="ls4">Preparing dashboard…</div>
+    </div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script src="{{ url_for('static', filename='js/predict.js') }}"></script>
+</body>
+</html>

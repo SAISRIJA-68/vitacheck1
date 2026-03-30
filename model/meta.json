@@ -1,0 +1,71 @@
+{
+  "feature_names": [
+    "age",
+    "gender",
+    "bmi",
+    "exercise_days",
+    "diet_quality",
+    "sun_exposure",
+    "fatigue",
+    "bone_pain",
+    "muscle_weakness",
+    "numbness",
+    "pale_skin",
+    "hair_loss",
+    "vision_problems",
+    "frequent_infections",
+    "bleeding_gums",
+    "mood_changes",
+    "brain_fog",
+    "joint_pain"
+  ],
+  "classes": [
+    "Iron Deficiency Anemia",
+    "Vitamin A Deficiency",
+    "Vitamin B12 Deficiency",
+    "Vitamin C Deficiency",
+    "Vitamin D Deficiency",
+    "Vitamin K Deficiency"
+  ],
+  "accuracy": 0.7333,
+  "feature_importances": {
+    "age": 0.07603361837517719,
+    "gender": 0.019685771702014743,
+    "bmi": 0.08211535761567572,
+    "exercise_days": 0.053589621479613665,
+    "diet_quality": 0.04403052196406928,
+    "sun_exposure": 0.04317316995378504,
+    "fatigue": 0.04768356655853272,
+    "bone_pain": 0.06084683548877253,
+    "muscle_weakness": 0.03763767119281154,
+    "numbness": 0.07955590272011805,
+    "pale_skin": 0.0548125514524377,
+    "hair_loss": 0.046806431907613556,
+    "vision_problems": 0.0843911661712629,
+    "frequent_infections": 0.05289156120528196,
+    "bleeding_gums": 0.10101649230642354,
+    "mood_changes": 0.03507867412414022,
+    "brain_fog": 0.041206564801887745,
+    "joint_pain": 0.03944452098038185
+  },
+  "model_comparison": {
+    "Random Forest": 0.7333,
+    "Logistic Regression": 0.6633,
+    "Naive Bayes": 0.6133,
+    "KNN": 0.6833
+  },
+  "symptoms": [
+    "fatigue",
+    "bone_pain",
+    "muscle_weakness",
+    "numbness",
+    "pale_skin",
+    "hair_loss",
+    "vision_problems",
+    "frequent_infections",
+    "bleeding_gums",
+    "mood_changes",
+    "brain_fog",
+    "joint_pain"
+  ]
+}

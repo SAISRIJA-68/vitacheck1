@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>VitaCheck — Your Results</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+</head>
+<body class="results-page" data-theme="dark">
+
+<nav class="nav">
+  <a href="/" class="nav-brand"><span class="logo-icon">⬡</span> VitaCheck</a>
+  <div class="nav-actions">
+    <button class="btn-outline" onclick="downloadReport()">📄 Download Report</button>
+    <button class="btn-outline" onclick="resetForm()">↺ New Check</button>
+    <button class="theme-toggle" id="themeToggle" title="Toggle dark/light mode">☽</button>
+  </div>
+</nav>
+
+<div class="results-wrap" id="resultsWrap">
+
+  <!-- ── TOP ROW: Diagnosis + Health Score + Severity ── -->
+  <section class="top-row">
+
+    <div class="diagnosis-card card reveal">
+      <div class="card-tag">Predicted Deficiency</div>
+      <h1 class="diagnosis-title" id="diagnosisTitle">—</h1>
+      <div class="confidence-row">
+        <span>Confidence</span>
+        <div class="conf-bar-wrap">
+          <div class="conf-bar"><div class="conf-fill" id="confFill"></div></div>
+          <span class="conf-pct" id="confPct">—</span>
+        </div>
+      </div>
+      <div class="supplements-box" id="supplementsBox"></div>
+    </div>
+
+    <div class="score-card card reveal" style="animation-delay:.1s">
+      <div class="card-tag">Health Score</div>
+      <div class="score-ring-wrap">
+        <svg viewBox="0 0 140 140" class="score-svg">
+          <circle cx="70" cy="70" r="60" fill="none" stroke="var(--surface2)" stroke-width="10"/>
+          <circle cx="70" cy="70" r="60" fill="none" stroke="url(#hs)" stroke-width="10"
+            stroke-dasharray="376.99" stroke-dashoffset="376.99" stroke-linecap="round"
+            transform="rotate(-90 70 70)" id="scoreCircle"/>
+          <defs>
+            <linearGradient id="hs" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#6ee7b7"/>
+              <stop offset="100%" stop-color="#3b82f6"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <div class="score-number" id="scoreNumber">0</div>
+      </div>
+      <div class="score-label" id="scoreLabel">Calculating…</div>
+    </div>
+
+    <div class="severity-card card reveal" style="animation-delay:.2s">
+      <div class="card-tag">Severity Level</div>
+      <div class="sev-badge" id="sevBadge">—</div>
+      <div class="sev-gauge">
+        <div class="gauge-track">
+          <div class="gauge-fill" id="gaugeFill"></div>
+        </div>
+        <div class="gauge-labels">
+          <span style="color:#22c55e">Mild</span>
+          <span style="color:#f59e0b">Moderate</span>
+          <span style="color:#ef4444">Severe</span>
+        </div>
+      </div>
+      <div class="symptom-summary" id="symptomSummary"></div>
+    </div>
+
+  </section>
+
+  <!-- ── CHARTS ROW ── -->
+  <section class="charts-row">
+
+    <div class="chart-card card reveal" style="animation-delay:.3s">
+      <div class="card-tag">Model Comparison</div>
+      <canvas id="modelChart" height="200"></canvas>
+    </div>
+
+    <div class="chart-card card reveal" style="animation-delay:.4s">
+      <div class="card-tag">Deficiency Probability</div>
+      <canvas id="probChart" height="200"></canvas>
+    </div>
+
+    <div class="chart-card card reveal" style="animation-delay:.5s">
+      <div class="card-tag">Feature Importance</div>
+      <canvas id="featChart" height="200"></canvas>
+    </div>
+
+  </section>
+
+  <!-- ── FOOD RECOMMENDATIONS ── -->
+  <section class="food-section card reveal" style="animation-delay:.6s">
+    <div class="section-header">
+      <h2>🥗 Recommended Foods</h2>
+      <p>Foods rich in the nutrients your body needs</p>
+    </div>
+    <div class="food-pills" id="foodPills"></div>
+  </section>
+
+  <!-- ── DIET PLAN ── -->
+  <section class="diet-section card reveal" style="animation-delay:.7s">
+    <div class="section-header">
+      <h2>🍽️ Daily Diet Plan</h2>
+      <p>Your personalised meal schedule</p>
+    </div>
+    <div class="meal-timeline" id="mealTimeline"></div>
+  </section>
+
+  <!-- ── LIFESTYLE + ALL PROBS ── -->
+  <section class="bottom-row">
+
+    <div class="lifestyle-card card reveal" style="animation-delay:.8s">
+      <div class="section-header">
+        <h2>🌿 Lifestyle Suggestions</h2>
+      </div>
+      <ul class="lifestyle-list" id="lifestyleList"></ul>
+    </div>
+
+    <div class="all-probs-card card reveal" style="animation-delay:.9s">
+      <div class="section-header">
+        <h2>📊 All Predictions</h2>
+        <p>Model confidence for each deficiency</p>
+      </div>
+      <div class="prob-list" id="probList"></div>
+    </div>
+
+  </section>
+
+</div>
+
+<!-- No data fallback -->
+<div class="no-data hidden" id="noData">
+  <div class="no-data-box">
+    <div style="font-size:3rem">🔬</div>
+    <h2>No results found</h2>
+    <p>Please fill in the questionnaire first.</p>
+    <a href="/predict-page" class="cta-btn">Take the Health Check</a>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script src="{{ url_for('static', filename='js/results.js') }}"></script>
+</body>
+</html>
